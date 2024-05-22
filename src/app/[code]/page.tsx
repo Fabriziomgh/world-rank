@@ -1,5 +1,6 @@
 import { getBorders, getCountrie } from '@/actions/country-actions';
 import { formaterNumber } from '@/lib/numberFormater';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,12 +10,28 @@ interface Props {
    };
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+   try {
+      const { code } = params;
+      const countrie = await getCountrie(code);
+
+      return {
+         title: `${countrie.name.common}`,
+         description: `${countrie.name.official}`,
+         icons: countrie.flags.svg,
+      };
+   } catch (error) {
+      return {
+         title: '404',
+      };
+   }
+}
+
 export default async function CountryPage({ params }: Props) {
    const { code } = params;
    const countrie = await getCountrie(code);
    const borders = countrie.borders.join(',');
    const countrieBorders = await getBorders(borders);
-   console.log(countrieBorders);
 
    return (
       <div className="pb-20">
