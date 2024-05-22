@@ -8,7 +8,7 @@ import Search from '@/components/Search';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useEffect, useState } from 'react';
 import { Country } from '@/interfaces/country-interface';
-import { useSortCountries } from '@/hooks/useSortCountries';
+import { sortCountries } from '@/lib/sortCountries';
 import {
    getCountriesByRegion,
    getIndependentCountries,
@@ -36,7 +36,7 @@ const Countrys = ({ allCountries }: Props) => {
 
    useEffect(() => {
       if (debounceSearch === '') {
-         const sortInitial = useSortCountries(allCountries, 'population');
+         const sortInitial = sortCountries(allCountries, 'population');
          if (!sortInitial) return;
          return setCountries(sortInitial);
       }
@@ -50,13 +50,13 @@ const Countrys = ({ allCountries }: Props) => {
       if (searchCountrie.length === 0) {
          return;
       } else {
-         const sortedSearch = useSortCountries(searchCountrie, sortBy);
+         const sortedSearch = sortCountries(searchCountrie, sortBy);
          setCountries(sortedSearch!);
       }
    }, [debounceSearch, sortBy]);
 
    useEffect(() => {
-      const sortC = useSortCountries(countries, sortBy);
+      const sortC = sortCountries(countries, sortBy);
       if (!sortC) return;
       setCountries(sortC);
    }, [sortBy]);
@@ -79,7 +79,7 @@ const Countrys = ({ allCountries }: Props) => {
    useEffect(() => {
       async function independentCountries() {
          if (countriesIndependent === false) {
-            const sortInitial = useSortCountries(allCountries, 'population');
+            const sortInitial = sortCountries(allCountries, 'population');
             if (!sortInitial) return;
             return setCountries(sortInitial);
          }
